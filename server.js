@@ -7,8 +7,10 @@ if (process.env.NODE_ENV !== "production") // meaning when somehow this is in pr
 const express = require("express")
 const app = express()
 const expressLayouts = require("express-ejs-layouts")
+const bodyParser = require("body-parser")
 
 const indexRouter = require("./routes/index")
+const ulamaRouter = require("./routes/ulama")
 
 
 app.set("view engine", "ejs")
@@ -16,13 +18,16 @@ app.set("views", __dirname + "/views")
 app.set("layout", "layouts/layout")
 app.use(expressLayouts)
 app.use(express.static("public")) // public files such as stylesheet, markups etc
+app.use(bodyParser.urlencoded({limit: "10mb", extended: false}))
 
-const mongoose = require("mongoose")
-mongoose.connect(process.env.DATABASE_URL)
-const db = mongoose.connection
-db.on("error", error => console.log(error))
-db.once("open", () => console.log("Connected to mongoose"))
+// const mongoose = require("mongoose")
+// mongoose.connect(process.env.DATABASE_URL)
+// const db = mongoose.connection
+// db.on("error", error => console.log(error))
+// db.once("open", () => console.log("Connected to mongoose"))
 
 app.use("/", indexRouter)
+app.use("/ulama", ulamaRouter)
 
-app.listen(process.env.PORT || 3000) // here the || checks if the left most value is "falsy" (ex undefined, null, 0, NaN, etc), and if so takes the rightmost number
+
+app.listen(process.env.PORT || 3000) // here the || checks if the left most value is "falsy" (ex undefined, null, 0, NaN, etc), and if so takes the rightmost numberexp
